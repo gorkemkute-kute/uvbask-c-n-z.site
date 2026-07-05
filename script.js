@@ -1,87 +1,56 @@
-const phoneNumber = '905072966175';
-const emailAddress = 'uvbaskıcınız@gmail.com';
-
-const html = document.documentElement;
-const themeToggle = document.querySelector('.theme-toggle');
-const themeIcon = document.querySelector('.theme-icon');
-const themeText = document.querySelector('.theme-text');
+const body = document.body;
 const menuBtn = document.querySelector('.menu-btn');
-const nav = document.querySelector('.site-nav');
-const quoteForm = document.querySelector('#quoteForm');
+const navLinks = document.querySelectorAll('.main-nav a');
+const themeToggle = document.querySelector('.theme-toggle');
+const themeText = document.querySelector('.theme-text');
+const themeIcon = document.querySelector('.theme-icon');
 const year = document.querySelector('#year');
 
-function setTheme(theme) {
-  html.setAttribute('data-theme', theme);
-  localStorage.setItem('uv-theme', theme);
+if (year) year.textContent = new Date().getFullYear();
 
-  const isLight = theme === 'light';
-  themeIcon.textContent = isLight ? '☀' : '☾';
-  themeText.textContent = isLight ? 'Açık' : 'Koyu';
+function setTheme(theme){
+  body.setAttribute('data-theme', theme);
+  localStorage.setItem('uv-theme', theme);
+  if(theme === 'light'){
+    themeText.textContent = 'Koyu Mod';
+    themeIcon.textContent = '☾';
+  }else{
+    themeText.textContent = 'Açık Mod';
+    themeIcon.textContent = '☀';
+  }
 }
 
 const savedTheme = localStorage.getItem('uv-theme');
-const preferredTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-setTheme(savedTheme || preferredTheme);
+if(savedTheme){
+  setTheme(savedTheme);
+}else{
+  setTheme('dark');
+}
 
 themeToggle?.addEventListener('click', () => {
-  const nextTheme = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-  setTheme(nextTheme);
+  const active = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  setTheme(active);
 });
 
 menuBtn?.addEventListener('click', () => {
-  const isOpen = nav.classList.toggle('is-open');
-  document.body.classList.toggle('menu-open', isOpen);
-  menuBtn.setAttribute('aria-expanded', String(isOpen));
+  const isOpen = body.classList.toggle('menu-open');
+  menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 });
 
-nav?.querySelectorAll('a').forEach((link) => {
+navLinks.forEach(link => {
   link.addEventListener('click', () => {
-    nav.classList.remove('is-open');
-    document.body.classList.remove('menu-open');
-    menuBtn?.setAttribute('aria-expanded', 'false');
+    body.classList.remove('menu-open');
+    menuBtn?.setAttribute('aria-expanded','false');
   });
 });
 
-quoteForm?.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const formData = new FormData(quoteForm);
-  const name = formData.get('name');
-  const product = formData.get('product');
-  const quantity = formData.get('quantity');
-  const note = formData.get('note') || '-';
-
-  const message = `Merhaba, UVBASKICINIZ sitesinden geliyorum.\n\nFirma / İsim: ${name}\nÜrün Tipi: ${product}\nTahmini Adet: ${quantity}\nNot: ${note}\n\nTeklif almak istiyorum.`;
-  window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
-});
-
-year.textContent = new Date().getFullYear();
-
-const revealItems = document.querySelectorAll('.reveal');
 const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('is-visible');
       observer.unobserve(entry.target);
     }
   });
 }, { threshold: 0.12 });
 
-revealItems.forEach((item) => observer.observe(item));
-
-const sections = document.querySelectorAll('main section[id]');
-const navLinks = document.querySelectorAll('.site-nav a');
-
-function setActiveLink() {
-  let current = '';
-  sections.forEach((section) => {
-    const sectionTop = section.offsetTop - 120;
-    if (window.scrollY >= sectionTop) current = section.getAttribute('id');
-  });
-
-  navLinks.forEach((link) => {
-    link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
-  });
-}
-
-window.addEventListener('scroll', setActiveLink, { passive: true });
-setActiveLink();
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
