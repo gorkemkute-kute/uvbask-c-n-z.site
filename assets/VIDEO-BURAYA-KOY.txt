@@ -1,0 +1,1 @@
+Öne çıkan videonu MP4 olarak bu klasöre yükle ve dosya adını one-cikan-video.mp4 yap. Site mouse ile üzerine gelince bu videoyu oynatır.
