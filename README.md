@@ -61,3 +61,5 @@ Ana renkler:
 Yeni logoyu `assets` klasörüne koyup `index.html` içindeki şu yolu değiştir:
 
 `assets/logo-uvbaskiciniz.png`
+
+Commit changes
